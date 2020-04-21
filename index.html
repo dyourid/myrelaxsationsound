@@ -1,0 +1,443 @@
+<html>
+
+<title></title>
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<style>
+		
+
+		/* Style the tab */
+		.tab {
+		  overflow: hidden;
+		  border: 1px solid #ccc;
+		  background-color: #f1f1f1;
+		}
+
+		/* Style the buttons inside the tab */
+		.tab button {
+		  background-color: inherit;
+		  float: left;
+		  border: none;
+		  outline: none;
+		  cursor: pointer;
+		  padding: 14px 16px;
+		  transition: 0.3s;
+		  font-size: 17px;
+		}
+
+		/* Change background color of buttons on hover */
+		.tab button:hover {
+		  background-color: #ddd;
+		}
+
+		/* Create an active/current tablink class */
+		.tab button.active {
+		  background-color: #ccc;
+		}
+
+		/* Style the tab content */
+		.tabcontent {
+		  display: none;
+		  padding: 6px 12px;
+		  border: 1px solid #ccc;
+		  border-top: none;
+		}
+		
+
+		
+		#playlist{
+width:400px;
+margin:0 auto;
+}
+
+#playlist ol{
+counter-reset: li;
+list-style: none;
+*list-style: decimal;
+font-size: 15px;
+font-family: 'Raleway', sans-serif;
+padding: 0;
+margin-bottom: 4em;
+}
+
+#playlist ol ol{
+margin: 0 0 0 2em;
+}
+
+#playlist li{
+position: relative;
+display: block;
+padding: .4em .4em .4em 2em;
+*padding: .4em;
+margin: .5em 0;
+background: #FC756F;
+color: #444;
+text-decoration: none;
+transition: all .2s ease-in-out;
+}
+
+#playlist li:hover{
+background: #d6d4d4;
+text-decoration:none;
+transform: scale(1.1);
+cursor:pointer;
+}
+
+#playlist li:before{
+content: counter(li);
+counter-increment: li;
+position: absolute;
+left: -1.3em;
+top: 50%;
+margin-top: -1.3em;
+background:#FC756F;
+height: 2em;
+width: 2em;
+line-height: 2em;
+border: .3em solid #fff;
+text-align: center;
+font-weight: bold;
+color:#FFF;
+}
+
+.outerheader {
+  padding: 60px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+  font-size: 30px;
+}
+#timer{
+width:100%;
+height:60px;
+background-color:#f3f3f3;
+color:#000000;
+font-size:24px;
+font-weight:bolder;
+line-height:60px;
+text-align:center;
+}
+#stop{
+height:40px;
+width:120px;
+background-color:red;
+color:#ffffff;
+border:1px solid black;
+}
+.cplay{
+    height: 50px;
+    width: 299px;
+    text-align: center;
+    background-color: #blue;
+    color: #ffffff;
+    background-color: forestgreen;
+    font-size: 25px;
+    font-weight: bolder;
+    line-height: 50px;
+    border: aqua;
+    border-radius: 10px;
+	display:none;
+
+
+}
+
+
+	</style>
+
+	<script type="text/javascript">
+		var sourceNodes = [];
+		var iscontinue=0;
+		function makeSound(name) {
+			var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+			var source = audioContext.createBufferSource();
+			sourceNodes.push(source);
+			
+			var request = new XMLHttpRequest();
+			
+			request.open('GET', name+'.webm', true);
+			
+			request.responseType = 'arraybuffer';
+			request.onload = function() {
+			  
+			  audioContext.decodeAudioData(request.response, function(buffer) {
+			    source.buffer = buffer;
+			    
+			    source.connect(audioContext.destination);
+			    
+			    source.loop = true;
+			   
+			    source.start(0);
+			  }, function(e) {
+			    console.log('Audio error! ', e);
+			  });
+			}
+			
+			request.send();
+		}
+			function stopSound(name,indexis) {
+			var i=0;
+			   sourceNodes.forEach(s=>{
+	    	if(i==indexis){
+	    	s.stop(0);
+			}
+	    i++;
+	    });
+		
+		}
+	</script>
+
+	<script>
+	$(document).ready(function(){
+	
+	$('body').on('click', '#playlist2 li', function() {
+    
+	var indexis=$(this).index();
+
+    var delitem = $(this).text();
+ 
+		  $("#playlist2 li").filter(function(){
+			return $(this).text() === delitem;
+		  }).hide();
+  
+		var thename=delitem.split(" ");
+	
+		  stopSound(thename[0],indexis);
+});
+
+	  $("#rain_normal").click(function(){
+	    makeSound("rain_normal");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>rain_normal &#9986;</li> ");
+		start();
+		
+	  });
+
+	  $("#meditation_flute").click(function(){
+	    makeSound("meditation_flute");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>meditation_flute</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#meditation_piano").click(function(){
+	    makeSound("meditation_piano");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>meditation_piano</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#forest_creek").click(function(){
+	    makeSound("forest_creek");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>forest_creek</li>");
+	if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#forest_birds").click(function(){
+	    makeSound("forest_birds");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>forest_birds</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#forest_fire").click(function(){
+	    makeSound("forest_fire");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>forest_fire</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#forest_frogs").click(function(){
+	    makeSound("forest_frogs");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>forest_frogs</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#forest_grasshoppers").click(function(){
+	    makeSound("forest_grasshoppers");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>forest_grasshoppers</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#forest_waterfall").click(function(){
+	    makeSound("forest_waterfall");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>forest_waterfall</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#meditation_bells").click(function(){
+	    makeSound("meditation_bells");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>meditation_bells</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#rain_on_roof").click(function(){
+	    makeSound("rain_on_roof");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>rain_on_roof</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#gray_noise").click(function(){
+	    makeSound("gray_noise");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>gray_noise</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#pink_noise").click(function(){
+	    makeSound("pink_noise");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>pink_noise</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#whitenoise").click(function(){
+	    makeSound("whitenoise");
+		 $(".cplay").show();
+	    $("#playlist2").append("<li>white_noise</li>");
+		if(iscontinue==0){
+		start();
+		}
+	  });
+
+	  $("#stop").click(function(){
+	    sourceNodes.forEach(s=>{
+	    	console.log("Pausing");
+			console.log(s);
+	    	s.stop(0);
+	    	$("#playlist2").html("");
+			$("#timer").text("0:00");
+	    	value=0;
+	    });
+		stop();
+		 $(".cplay").hide();
+	  });
+
+	  
+
+	});
+
+	function changeValue() {
+		var m=0;
+		var s=++value;
+
+		if (s>60) {
+			m = s / 60;
+			s = s % 60;
+
+			document.getElementById("timer").innerHTML = parseInt(m) + " minute(s) and " + s + " second(s)";
+		} else {
+			document.getElementById("timer").innerHTML = s + " second(s)";
+		}
+	}
+
+	var timerInterval = null;
+	function start() {
+	  stop(); // stoping the previous counting (if any)
+	  value = 0;
+	  iscontinue=1;
+	  timerInterval = setInterval(changeValue, 1000);  
+	}
+	var stop = function() {
+	iscontinue=0;
+	  clearInterval(timerInterval);
+
+	}
+
+
+	</script>
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="outerheader"><h2>My Relaxation Sounds</h2>
+		<h3>Create your own sound!</h3>
+		</div>
+		<p id="timer">0:00 </p>
+
+		
+		<div class="cplay">Currently Playing </div>
+		<div id="playlist">
+		
+			<ol id="playlist2">
+			
+			</ol>
+			
+		</div>
+
+		<ul class="nav nav-pills">
+		    <li class="active"><a data-toggle="pill" href="#Nature">Nature</a></li>
+		    <li><a data-toggle="pill" href="#White">Noise</a></li>
+		    <li><a data-toggle="pill" href="#Instrument">Instrument</a></li>
+	  	</ul>
+
+	  	<div class="tab-content">
+		    <div id="Instrument" class="tab-pane fade" style="margin: 10px">
+		      <button type="button" class="btn btn-success" id="meditation_flute">Flute</button>
+			  <button type="button" class="btn btn-success" id="meditation_piano">Piano</button>
+			  <button type="button" class="btn btn-success" id="meditation_bells">Bells</button>
+		    </div>
+		    <div id="White" class="tab-pane fade" style="margin: 10px">
+		      <button type="button" class="btn btn-success" id="gray_noise">Gray Noise</button>
+		      <button type="button" class="btn btn-success" id="pink_noise">Pink Noise</button>
+		      <button type="button" class="btn btn-success" id="whitenoise">White Noise</button>
+		    </div>
+		    <div id="Nature" class="tab-pane fade in active" style="margin: 10px">
+		      <button type="button" class="btn btn-success" id="rain_normal">Normal Rain</button>
+			  <button type="button" class="btn btn-success" id="rain_on_roof">Rain on roof</button>
+			  <button type="button" class="btn btn-success" id="forest_birds">Birds</button>
+			  <button type="button" class="btn btn-success" id="forest_creek">Creek</button>
+			  <button type="button" class="btn btn-success" id="forest_fire">Fire</button>
+			  <button type="button" class="btn btn-success" id="forest_frogs">Frog</button>
+			  <button type="button" class="btn btn-success" id="forest_grasshoppers">Grasshoppers</button>
+			  <button type="button" class="btn btn-success" id="forest_waterfall">Waterfall</button>
+		    </div>
+	  	</div>
+
+		<div style="margin-top: 10px">
+		
+			<button  type="button" class="btn btn-danger" id="stop">Restart Playing</button>
+		</div>
+	</div>
+
+
+
+</body>
+
+</html>
